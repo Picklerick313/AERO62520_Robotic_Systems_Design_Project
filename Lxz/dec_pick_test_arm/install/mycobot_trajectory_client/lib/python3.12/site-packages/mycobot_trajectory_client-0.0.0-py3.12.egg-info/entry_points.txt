@@ -1,0 +1,2 @@
+[console_scripts]
+mycobot_trajectory_client = mycobot_trajectory_client.trajectory_client:main

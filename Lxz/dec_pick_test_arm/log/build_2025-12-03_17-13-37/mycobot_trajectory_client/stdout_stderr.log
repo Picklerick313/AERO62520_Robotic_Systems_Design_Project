@@ -1,0 +1,35 @@
+running egg_info
+creating ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info
+writing ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/PKG-INFO
+writing dependency_links to ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/dependency_links.txt
+writing entry points to ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/entry_points.txt
+writing requirements to ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/requires.txt
+writing top-level names to ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/top_level.txt
+writing manifest file '../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/SOURCES.txt'
+reading manifest file '../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/SOURCES.txt'
+writing manifest file '../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build
+creating /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib
+creating /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client
+copying mycobot_trajectory_client/__init__.py -> /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client
+copying mycobot_trajectory_client/trajectory_client.py -> /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client
+running install
+running install_lib
+creating /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client
+copying /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client/__init__.py -> /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client
+copying /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client/trajectory_client.py -> /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client
+byte-compiling /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client/__init__.py to __init__.cpython-312.pyc
+byte-compiling /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client/trajectory_client.py to trajectory_client.cpython-312.pyc
+running install_data
+creating /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/ament_index
+creating /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/ament_index/resource_index
+creating /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/ament_index/resource_index/packages
+copying resource/mycobot_trajectory_client -> /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/ament_index/resource_index/packages
+copying package.xml -> /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/mycobot_trajectory_client
+running install_egg_info
+Copying ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info to /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client-0.0.0-py3.12.egg-info
+running install_scripts
+Installing mycobot_trajectory_client script to /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/mycobot_trajectory_client
+writing list of installed files to '/home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/install.log'

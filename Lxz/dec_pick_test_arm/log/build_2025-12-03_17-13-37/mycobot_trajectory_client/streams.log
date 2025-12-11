@@ -1,0 +1,37 @@
+[0.862s] Invoking command in '/home/laptop34/dec_pick_test_arm/src/mycobot_trajectory_client': CONDA_PROMPT_MODIFIER=(base) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/mycobot_trajectory_client build --build-base /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build install --record /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/install.log --single-version-externally-managed install_data
+[1.086s] running egg_info
+[1.086s] creating ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info
+[1.103s] writing ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/PKG-INFO
+[1.103s] writing dependency_links to ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/dependency_links.txt
+[1.103s] writing entry points to ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/entry_points.txt
+[1.103s] writing requirements to ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/requires.txt
+[1.103s] writing top-level names to ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/top_level.txt
+[1.103s] writing manifest file '../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/SOURCES.txt'
+[1.138s] reading manifest file '../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/SOURCES.txt'
+[1.138s] writing manifest file '../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info/SOURCES.txt'
+[1.139s] running build
+[1.139s] running build_py
+[1.139s] creating /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build
+[1.139s] creating /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib
+[1.139s] creating /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client
+[1.139s] copying mycobot_trajectory_client/__init__.py -> /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client
+[1.139s] copying mycobot_trajectory_client/trajectory_client.py -> /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client
+[1.139s] running install
+[1.144s] running install_lib
+[1.161s] creating /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client
+[1.161s] copying /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client/__init__.py -> /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client
+[1.161s] copying /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build/lib/mycobot_trajectory_client/trajectory_client.py -> /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client
+[1.162s] byte-compiling /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client/__init__.py to __init__.cpython-312.pyc
+[1.162s] byte-compiling /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client/trajectory_client.py to trajectory_client.cpython-312.pyc
+[1.164s] running install_data
+[1.164s] creating /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/ament_index
+[1.164s] creating /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/ament_index/resource_index
+[1.164s] creating /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/ament_index/resource_index/packages
+[1.164s] copying resource/mycobot_trajectory_client -> /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/ament_index/resource_index/packages
+[1.164s] copying package.xml -> /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/share/mycobot_trajectory_client
+[1.164s] running install_egg_info
+[1.182s] Copying ../../build/mycobot_trajectory_client/mycobot_trajectory_client.egg-info to /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages/mycobot_trajectory_client-0.0.0-py3.12.egg-info
+[1.183s] running install_scripts
+[1.309s] Installing mycobot_trajectory_client script to /home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/mycobot_trajectory_client
+[1.309s] writing list of installed files to '/home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/install.log'
+[1.331s] Invoked command in '/home/laptop34/dec_pick_test_arm/src/mycobot_trajectory_client' returned '0': CONDA_PROMPT_MODIFIER=(base) DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/laptop34/dec_pick_test_arm/install/mycobot_trajectory_client/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/mycobot_trajectory_client build --build-base /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/build install --record /home/laptop34/dec_pick_test_arm/build/mycobot_trajectory_client/install.log --single-version-externally-managed install_data
