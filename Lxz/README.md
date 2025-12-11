@@ -1,6 +1,6 @@
 ##Todos:
-- [x]Test code for pick and place
-- [ ]Plan trajectory with Moveit2 
+- [x] Test code for pick and place
+- [ ] Plan trajectory with Moveit2 
 - [ ] Eye-in-hand calibration
 - [ ] Implement Graspnet/LLM based on [This open project](https://github.com/airs-cuhk/airship/tree/main) 
 
