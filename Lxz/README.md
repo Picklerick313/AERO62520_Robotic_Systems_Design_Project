@@ -1,3 +1,9 @@
+##Todos:
+- [x]Test code for pick and place
+- [ ]Plan trajectory with Moveit2 
+- [ ] Eye-in-hand calibration
+- [ ] Implement Graspnet/LLM based on [This open project](https://github.com/airs-cuhk/airship/tree/main) 
+
 ---
 The API (mycobotpy) can manipulate the robot just fine,However, Moveit2 is chosen for later vision-guided pick and place
 ---
