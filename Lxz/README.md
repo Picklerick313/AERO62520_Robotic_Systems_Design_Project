@@ -1,4 +1,4 @@
-##Todos:
+## To-dos:
 - [x] Test code for pick and place
 - [ ] Plan trajectory with Moveit2 
 - [ ] Eye-in-hand calibration
