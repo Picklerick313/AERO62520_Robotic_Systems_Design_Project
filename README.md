@@ -14,19 +14,26 @@ SLAM navigation with Pick and Place on Leo-rover and Mycobot280pi.
 </div>
 
 ---
+### 👥 Team Work Allocation
+
+| Team / Role | Members |
+| :--- | :--- |
+| **DESIGN Team** | Tom |
+| **VISION Team** | XuYu, Wangsiyuan |
+| **Manipulator Team** | Lyuxingze |
+| **NAVIGATION Team** | Ansber |
+
 
 ## 🛠️ Tech Stack & Powered By
 
 We leverage the latest industry-standard robotics frameworks:
 
-| Framework | Usage | Logo |
-| :--- | :--- | :---: |
-| **ROS 2 Jazzy** | Core Middleware & Communication | <img src="https://upload.wikimedia.org/wikipedia/commons/b/bb/Ros_logo.svg" width="60"/> |
-| **Nav2** | Autonomous Navigation & Path Planning | <img src="https://navigation.ros.org/_static/nav2_logo.png" width="60"/> |
-| **MoveIt 2** | 6-DOF Arm Trajectory Planning | <img src="https://moveit.picknik.ai/assets/logo/moveit_logo-black.png" width="100"/> |
-| **Cartographer** | Real-time 2D SLAM (Mapping) | *Google Cartographer* |
-
----
+| Framework | Usage |
+| :--- | :--- |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/b/bb/Ros_logo.svg" width="40" align="center"/> **ROS 2 Jazzy** | Core Middleware & Communication |
+| <img src="https://th.bing.com/th/id/OIP.omCtJW6UOPKed__9HDWFmQHaIV?w=138&h=180&c=7&r=0&o=7&cb=ucfimg2&dpr=1.3&pid=1.7&rm=3&ucfimg=1" width="40" align="center"/> **Nav2** | Autonomous Navigation & Path Planning |
+| <img src="https://avatars.githubusercontent.com/u/4408844?s=48&v=4" width="40" align="center"/> **MoveIt 2** | 6-DOF Arm Trajectory Planning |
+| <img src="https://avatars.githubusercontent.com/u/20636162?s=200&v=4" width="40" align="center"/> **Cartographer** | Real-time 2D SLAM (Mapping) |
 
 ## 🚀 Key Features
 
