@@ -2,30 +2,35 @@
 ---
 SLAM navigation with Pick and Place on Leo-rover and Mycobot280pi.
 
+![Project Banner](http://googleusercontent.com/image_collection/image_retrieval/11010681557222220866_0)
 
-![ROS 2 Jazzy](http://googleusercontent.com/image_collection/image_retrieval/11542786739967973228_0)
+> **A ROS 2 Jazzy-based mobile manipulation platform capable of SLAM, autonomous navigation, and vision-guided pick & place.**
 
-This repository contains the source code for our group robotics project, featuring an autonomous mobile manipulator capable of SLAM, navigation, and vision-guided pick & place operations. The system is built on **ROS 2 Jazzy Jalisco**.
+---
 
-<p align="center">
-  <img src="http://googleusercontent.com/image_collection/image_retrieval/12479818295504692046_0" alt="Robot Prototype" width="600"/>
-  <br>
-  <em>Figure 1: Conceptual view of the Mobile Manipulator (Replace with your actual robot photo)</em>
+## 🛠️ Tech Stack
+
+<p align="left">
+  <img src="http://googleusercontent.com/image_collection/image_retrieval/15017715312670790216_0" alt="ROS 2" width="100"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="http://googleusercontent.com/image_collection/image_retrieval/3947629713064840972_0" alt="MoveIt 2" width="100"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="http://googleusercontent.com/image_collection/image_retrieval/12811055274104730879_0" alt="Nav2" width="100"/>
 </p>
+
+This project leverages the latest robotics standards:
+* **ROS 2 Jazzy Jalisco:** The core middleware.
+* **MoveIt 2:** For 6-DOF arm trajectory planning.
+* **Nav2:** For autonomous navigation and path planning.
+* **Google Cartographer:** For real-time 2D SLAM.
+
+---
 
 ## 🚀 Key Features
 
-| Feature | Description | Visual |
+| Feature | Description | Status |
 | :--- | :--- | :--- |
-| **SLAM & Nav** | Real-time mapping using **Google Cartographer** and **Nav2** for path planning. | <img src="http://googleusercontent.com/image_collection/image_retrieval/11518902879662360098_0" width="200" alt="SLAM Demo" /> |
-| **Manipulation** | Trajectory planning with **MoveIt 2** and Graspnet/LLM integration. | <img src="http://googleusercontent.com/image_collection/image_retrieval/11744164540385609507_0" width="200" alt="MoveIt Demo" /> |
-| **Mechanical** | Custom-designed primary payload sled and peripheral bins. | *(Add CAD Render)* |
-
-## 🛠️ Prerequisites
-
-* **OS:** Ubuntu 24.04 LTS (Noble Numbat)
-* **ROS Distribution:** ROS 2 Jazzy
-* **Hardware:**
-    * Mobile Base (e.g., Turtlebot/Create3)
-    * Manipulator Arm
-    * RGB-D Camera (e.g., RealSense/Oak-D)
+| **Mechanical Design** | Custom-designed primary payload sled and peripheral bins. | ✅ Done |
+| **SLAM** | Real-time mapping using **Google Cartographer**. | 🚧 In Progress |
+| **Navigation** | Autonomous path planning and obstacle avoidance via **Nav2**. | 🚧 In Progress |
+| **Manipulation** | Vision-guided grasping using **Graspnet/LLM** & **MoveIt 2**. | 📝 Planned |
