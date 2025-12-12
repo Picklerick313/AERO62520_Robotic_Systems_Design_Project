@@ -1,6 +1,8 @@
 # Ans
 # Leo Rover – Navigation & Mapping (ROS2 Jazzy)
 
+# Important : This page is under construction
+
 This repository contains the full navigation and mapping pipeline used to enable a Leo Rover to explore an unknown environment, detect colored objects, and navigate to colored bins. It includes:
 
 - Low-level networking between NUC ↔ Raspberry Pi  
@@ -10,7 +12,6 @@ This repository contains the full navigation and mapping pipeline used to enable
 - Localization (AMCL)  
 - Navigation (Nav2)  
 - Sensor fusion (IMU + odom + lidar)  
-- Object detection module structure  
 - System bring-up and recovery instructions  
 
 This documentation is designed to help:
@@ -41,7 +42,6 @@ Ans/
 │   ├── 03_sensor_fusion.md
 │   ├── 04_slam_mapping.md
 │   ├── 05_localization_nav2.md
-│   └── 06_object_detection.md
 ├── config/
 │   ├── netplan_nuc.yaml
 │   ├── netplan_pi.yaml
