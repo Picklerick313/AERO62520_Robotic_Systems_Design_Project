@@ -1,17 +1,35 @@
-# System Setup Progress
+# System Setup Progress Log
 
-This document records all development completed so far.
+This file tracks completed tasks, dates, and verification steps.
 
-## Completed Work
-- Static IP configuration on NUC (192.168.12.2)
-- ROS2 Jazzy installed and configured on NUC
-- Netplan applied successfully with correct permissions
-- RPLidar ROS2 driver installed and verified
-- Lidar data visualised in RViz using `view_rplidar_a2m12_launch.py`
+---
 
-## Pending Work
-- Raspberry Pi static IP setup (192.168.12.1)
-- SSH access from NUC to Pi via Ethernet
-- ROS2 multi-machine communication test
-- Integration of IMU, odometry, and TF tree
+## ✔ Completed
+- NUC static IP configured (192.168.12.2)
+- Raspberry Pi reachable via Ethernet
+- RPLidar working and visualized in RViz
+- ROS2 Jazzy environment configured on NUC
+- Repository created with documentation structure
 
+---
+
+## ⏳ In Progress
+- Raspberry Pi static IP finalization
+- Sensor Fusion validation (odom + IMU + scan)
+- TF tree verification
+- Nav2 tuning
+- Object detection integration
+
+---
+
+## 📝 Log Entries (update continuously)
+
+### 2025-12-10
+- Configured NUC netplan  
+- Verified /scan is visible in RViz  
+
+### 2025-12-12
+- Created full GitHub documentation  
+- Generated SLAM + Nav2 launch files  
+
+(Add more daily)
