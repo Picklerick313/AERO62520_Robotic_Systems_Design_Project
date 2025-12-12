@@ -22,14 +22,3 @@ This file tracks completed tasks, dates, and verification steps.
 
 ---
 
-## 📝 Log Entries (update continuously)
-
-### 2025-12-10
-- Configured NUC netplan  
-- Verified /scan is visible in RViz  
-
-### 2025-12-12
-- Created full GitHub documentation  
-- Generated SLAM + Nav2 launch files  
-
-(Add more daily)
