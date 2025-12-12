@@ -4,7 +4,7 @@ SLAM navigation with Pick and Place on Leo-rover and Mycobot280pi.
 
 
 ![ROS 2 Jazzy](https://img.shields.io/badge/ROS_2-Jazzy-22314E?style=for-the-badge&logo=ros&logoColor=white)
-![Build Status](https://img.shields.io/badge/build-passing-success?style=for-the-badge)
+![Build Status](https://img.shields.io/badge/build-in%20progress-yellow?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge)
 
 > **A mobile manipulation platform capable of SLAM, autonomous navigation, and vision-guided pick & place.(Image only as design idea)**
