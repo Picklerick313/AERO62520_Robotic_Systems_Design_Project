@@ -1,53 +1,66 @@
 # Ans
-# Navigation & Mapping for Leo Rover — GitHub Repository
+cat > README.md <<'EOF'
+# Leo Rover — Navigation & Mapping (ROS2 Jazzy)
+
+Repository: https://github.com/Picklerick313/AERO62520_Robotic_Systems_Design_Project (Ans folder)
 
 Purpose
 -------
-This repository is designed to:
-1. Track code and configuration development for the Navigation & Mapping project.
-2. Provide fast recovery steps so devices can be re-programmed quickly after hardware failure.
-3. Allow another developer to replicate the entire system and continue work.
+This repository provides all configuration, launch files, scripts and documentation needed to:
+1. Track code and configuration development for navigation and mapping.
+2. Restore devices rapidly after hardware failure (reflash & reconfigure).
+3. Allow others to replicate the full mapping and navigation pipeline.
 
-Contents
---------
-- `docs/`           — step-by-step documentation, run instructions, and troubleshooting.
-- `config/`         — all YAML parameter and netplan files used on devices.
-- `launch/`         — reproducible launch files for SLAM and Nav2.
-- `src/`            — project code (detection, navigation helper scripts).
-- `scripts/`        — convenience scripts (save map, start stacks).
-- `data/`           — saved maps, rosbags, logs (committed small reference files only).
-- `diagrams/`       — network, wiring, TF tree visuals for replication.
-- `.github/`        — CI templates and contribution guides.
+Folder overview (inside Ans/)
+- docs/: documentation and run/recovery instructions
+- config/: netplan and ROS parameter files
+- launch/: SLAM and Nav2 launches
+- scripts/: utilities (save map)
+- src/: robot packages (detection, mapping, navigation)
+- data/: saved maps and rosbags for reproducibility
+- tests/: verification checklists
 
-Current Progress (honest, date-stamped)
----------------------------------------
-Status as of [REPOSITORY COMMIT DATE]:
+Progress (honest)
+-----------------
+Completed:
+- NUC static IP configured: 192.168.12.2 (config/netplan_nuc.yaml)
+- ROS2 Jazzy installed on NUC; RPLidar driver installed and /scan validated in RViz
+- Basic repo structure and initial documentation created
 
-Completed
-- NUC (Intel NUC) configured with static Ethernet IP: `192.168.12.2`.
-- ROS2 Jazzy installed and configured on NUC.
-- RPLIDAR A2M12 driver installed on NUC and verified. `/scan` topic confirmed in RViz.
-- Repository structure (docs, config, launch, scripts) initialised and primary docs created.
+Remaining:
+- Configure Raspberry Pi netplan -> set static IP 192.168.12.1
+- Ensure Pi publishes /odom and /firmware/imu
+- Verify ROS2 multi-machine communication (Pi <-> NUC)
+- Build TF tree and perform sensor fusion (IMU+odom+lidar)
+- Run SLAM, save map, launch AMCL, tune Nav2
+- Implement colour detection -> pick/place integration
 
-In progress / remaining
-- Raspberry Pi (LeoOS) Ethernet static IP must be finalised to `192.168.12.1` (headless configuration).
-- ROS2 multi-machine communication verification (talker on Pi → listener on NUC).
-- IMU and odometry publication verification from Pi (`/firmware/imu`, `/odom`).
-- TF tree completion and sensor fusion verification.
-- SLAM mapping sessions, AMCL localization tuning, Nav2 parameter tuning.
-- Colour-detection → pick/place pipeline integration and gripper control on Pi.
+How to clone (on NUC)
+---------------------
+git clone https://github.com/Picklerick313/AERO62520_Robotic_Systems_Design_Project.git
+cd AERO62520_Robotic_Systems_Design_Project/Ans
 
-Quick status note:
-- If you see `/scan` on the NUC and NUC has `192.168.12.2`, you are one Pi configuration step away from full ROS2 multi-machine operation.
+Quick start (NUC)
+-----------------
+1. Source ROS2:
+   source /opt/ros/jazzy/setup.bash
+2. Create or use ROS workspace and link Ans/src into it:
+   mkdir -p ~/ros2_ws/src
+   cd ~/ros2_ws/src
+   ln -s ~/AERO62520_Robotic_Systems_Design_Project/Ans/src .
+   cd ~/ros2_ws
+   colcon build --symlink-install
+   source install/setup.bash
+3. Launch Lidar and SLAM, drive for mapping, save map (see docs/navmap_quickstart.md)
 
-Why this repo layout
---------------------
-- Everything required to recreate the system is committed (configs, launch, scripts, docs).
-- Recovery steps are explicit and in `docs/recovery.md`.
-- Detailed run order and verification checklist are in `docs/navmap_quickstart.md`.
+Recovery & replication
+----------------------
+Full step-by-step recovery instructions and exact commands are in docs/recovery.md.
 
-How to use this repository
---------------------------
-1. Clone the repo on the NUC:
+Contact
+-------
+Maintainer: Picklerick313 (GitHub)
+EOF
+
 
 
