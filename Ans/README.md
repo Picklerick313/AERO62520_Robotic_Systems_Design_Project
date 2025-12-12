@@ -19,7 +19,7 @@ Folder overview (inside Ans/)
 - data/: saved maps and rosbags for reproducibility
 - tests/: verification checklists
 
-Progress (honest)
+Progress
 -----------------
 Completed:
 - NUC static IP configured: 192.168.12.2 (config/netplan_nuc.yaml)
@@ -56,10 +56,6 @@ Recovery & replication
 ----------------------
 Full step-by-step recovery instructions and exact commands are in docs/recovery.md.
 
-Contact
--------
-Maintainer: Picklerick313 (GitHub)
-EOF
 
 
 
