@@ -10,7 +10,7 @@ SLAM navigation with Pick and Place on Leo-rover and Mycobot280pi.
 > **A robust mobile manipulation platform capable of SLAM, autonomous navigation, and vision-guided pick & place.**
 
 <div align="center">
-  <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Robot Prototype" width="80%" style="border-radius: 10px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);"/>
+  <img src="https://uploads-ssl.webflow.com/5aeedc7c6154a8acb0b29044/5e8e49e55ff2c0449644f5b7_persee%20on%20leo%20rover.jpg" alt="image of leorover" width="80%" style="border-radius: 10px; box-shadow: 0px 4px 10px rgba(0,0,0,0.1);"/>
 </div>
 
 ---
