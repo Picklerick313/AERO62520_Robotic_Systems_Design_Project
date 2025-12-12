@@ -21,3 +21,4 @@ local_costmap:
     ros__parameters:
       global_frame: "odom"
       robot_base_frame: "base_link"
+
