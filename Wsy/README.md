@@ -22,10 +22,10 @@ The system operates using the following core states:
 
 ### 1. Preparation Phase (INIT)
 Handles system initialization.
-* `[*] -> INIT -> IDLE`
+* `[*] -> INIT -> IDLE -> MAPPING`
 
 This phase first ensures that the ROS 2 context is active and creates a node for the robot state machine. It then sets up an action client to communicate with the Nav2 navigation server (navigate_to_pose) and waits for the server to become available within a specified timeout. If the server is not available, the initialization fails to prevent unsafe operation. Additionally, the function subscribes to the LiDAR, camera, arm and any other topics to receive both internal and external sensor data.The IDLE
-state serves as a short buffer between operations.
+state serves as a short buffer between operations and the robot starts mapping.
 
 **Optimization:**
    * plan A: Potential target positions is stored during mapping to make subsequent navigation faster and more accurate.
@@ -33,7 +33,7 @@ state serves as a short buffer between operations.
 
 ### 2. Collecting Phase (COLLECTING)
 Handles locating, navigating to, and grasping the objects.
-* `MAPPING -> SEARCH_OBJECT -> NAVIGATE_TO_OBJECT`
+* `MAPPING -> SEARCH_OBJECT -> NAVIGATE_TO_OBJECT -> GRASP_OBJECT`
 
 **MAPPING:** Moving within the operational area within a specified time limit (will be set according to the mapping function).
 
@@ -86,8 +86,7 @@ stateDiagram-v2
         INIT --> IDLE
         IDLE --> MAPPING
     }
-    
-    MAPPING --> COLLECTING : Mapping done
+        MAPPING --> SEARCH_OBJECT
 
     note right of PREPARATION
         Move within specified time limit
