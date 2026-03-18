@@ -1,21 +1,20 @@
 # Wsy
 # Autonomous Robot State Machine
 # All of the following content is a draft and may be subject to change at any time.
-## 📖 Overview
+## Overview
 This repository contains the preliminary state machine logic for the robot to navigate, detect, grasp, and place blocks into designated bins. The architecture is divided into four main operational phases: **Preparation**, **Collecting**, **Placing**, and **Recovery**. 
 
 ## States
 The system operates using the following core states:
-    INIT = "INIT"
-    IDLE = "IDLE"
-    MAPPING = "MAPPING"
-    SEARCH_OBJECT = "SEARCH_OBJECT"
-    NAVIGATE_TO_OBJECT = "NAVIGATE_TO_OBJECT"
-    GRASP_OBJECT = "GRASP_OBJECT"
-    NAVIGATE_TO_BIN = "NAVIGATE_TO_BIN"
-    PLACE_OBJECT = "PLACE_OBJECT"
-    RECOVERY = "RECOVERY"
-    DONE = "DONE" 
+* INIT = 0
+* IDLE = 1
+* MAPPING = 2
+* SEARCH_OBJECT = 3
+* NAVIGATE_TO_OBJECT = 4
+* GRASP_OBJECT = 5
+* NAVIGATE_TO_BIN = 6
+* PLACE_OBJECT = 7
+* RECOVERY = 8
 
 ---
 
@@ -59,7 +58,6 @@ Acts as a safety buffer for functionality failures and terrain issues.
 
 ## State Machine Diagram
 
-
 ```mermaid
 stateDiagram-v2
     [*] --> PREPARATION
@@ -71,30 +69,31 @@ stateDiagram-v2
     }
     
     MAPPING --> COLLECTING : Mapping done
+
     note right of PREPARATION
-        - Move within specified time limit
-        - Lidar to find target direction
-        - Store potential target positions
+        Move within specified time limit
+        Use LiDAR to find target direction
+        Store potential target positions
     end note
 
     %% ---------------- collecting----------------
     state COLLECTING {
         SEARCH_OBJECT --> NAVIGATE_TO_OBJECT : Target found
-        SEARCH_OBJECT --> SEARCH_OBJECT : Target not found (+30s)
+        SEARCH_OBJECT --> SEARCH_OBJECT : Target not found (30s)
         
-        NAVIGATE_TO_OBJECT --> GRASP_OBJECT : Reach grasp-position
+        NAVIGATE_TO_OBJECT --> GRASP_OBJECT : Reach grasp position
         
         GRASP_OBJECT --> SEARCH_OBJECT : Done (total_count < 3)
         GRASP_OBJECT --> RETRY_TEST : Failed
         
-        RETRY_TEST --> GRASP_OBJECT : Within reach (Retry)
-        RETRY_TEST --> SEARCH_OBJECT : Out of reach (Abort, next)
+        RETRY_TEST --> GRASP_OBJECT : Within reach retry
+        RETRY_TEST --> SEARCH_OBJECT : Out of reach next
     }
     
     note right of COLLECTING
-        - Vision active when < 80cm
-        - Update counts on grasp
-        - Check bin surface on retry
+        Vision active when distance < 80cm
+        Update counts after grasp
+        Check bin surface during retry
     end note
 
     %% ---------------- placing ----------------
@@ -102,12 +101,13 @@ stateDiagram-v2
     
     state PLACING {
         NAVIGATE_TO_BIN --> PLACE_OBJECT : Arrived
-        PLACE_OBJECT --> PLACE_OBJECT : Done / Failed (Next item)
+        PLACE_OBJECT --> PLACE_OBJECT : Done or Failed next item
     }
     
-    PLACE_OBJECT --> [*] : succeed_place_count == 3 (Back to start)
+    PLACE_OBJECT --> [*] : succeed_place_count == 3
+
     note right of PLACING
-        - Updates succeed/fail and total counts
+        Update success and failure counts
     end note
 
     %% ---------------- recovery ----------------
@@ -118,9 +118,6 @@ stateDiagram-v2
     PLACE_OBJECT --> RECOVERY : fail_count == 3
 
     note right of RECOVERY
-        Stuck: Robot stuck due to terrain.
-        Failures: Human interruption needed 
-        (Plan A / Plan B).
+        Robot stuck due to terrain
+        Failures require human intervention
     end note
-
-Placeholder folder for Wsy-related files. Add files, scripts, or subfolders here.
