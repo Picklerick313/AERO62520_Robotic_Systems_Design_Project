@@ -1,0 +1,21 @@
+[0.657s] Invoking command in '/home/student24/robotproject/ros_nd2/build/color_blob_vision': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/student24/robotproject/ros_nd2/build/color_blob_vision/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/python3.12/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(env_robot) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/student24/robotproject/ros_nd2/build/color_blob_vision/build --no-deps symlink_data --force
+[0.942s] running develop
+[1.082s] running egg_info
+[1.096s] writing color_blob_vision.egg-info/PKG-INFO
+[1.096s] writing dependency_links to color_blob_vision.egg-info/dependency_links.txt
+[1.097s] writing entry points to color_blob_vision.egg-info/entry_points.txt
+[1.097s] writing requirements to color_blob_vision.egg-info/requires.txt
+[1.097s] writing top-level names to color_blob_vision.egg-info/top_level.txt
+[1.128s] reading manifest file 'color_blob_vision.egg-info/SOURCES.txt'
+[1.128s] writing manifest file 'color_blob_vision.egg-info/SOURCES.txt'
+[1.145s] running build_ext
+[1.145s] Creating /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/python3.12/site-packages/color-blob-vision.egg-link (link to .)
+[1.145s] Installing blob_depth_to_3d script to /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/color_blob_vision
+[1.146s] Installing color_blob_detector script to /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/color_blob_vision
+[1.146s] Installing color_blob_summary script to /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/color_blob_vision
+[1.146s] 
+[1.147s] Installed /home/student24/robotproject/ros_nd2/build/color_blob_vision
+[1.147s] running symlink_data
+[1.147s] symbolically linking /home/student24/robotproject/ros_nd2/build/color_blob_vision/resource/color_blob_vision -> /home/student24/robotproject/ros_nd2/install/color_blob_vision/share/ament_index/resource_index/packages
+[1.147s] symbolically linking /home/student24/robotproject/ros_nd2/build/color_blob_vision/package.xml -> /home/student24/robotproject/ros_nd2/install/color_blob_vision/share/color_blob_vision
+[1.181s] Invoked command in '/home/student24/robotproject/ros_nd2/build/color_blob_vision' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/student24/robotproject/ros_nd2/build/color_blob_vision/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/python3.12/site-packages:${PYTHONPATH} VIRTUAL_ENV_PROMPT=(env_robot) /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/student24/robotproject/ros_nd2/build/color_blob_vision/build --no-deps symlink_data --force

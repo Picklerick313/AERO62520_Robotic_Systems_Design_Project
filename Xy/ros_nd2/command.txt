@@ -1,0 +1,82 @@
+阶段 A：白色 HSV + 深度 0.05–1.0m + 3D 尺度 → 找 "bin:white" 做导航；
+阶段 B：全色 HSV + 深度 0.05–0.60m + 3D 尺度 → 输出 "block:<color>" / "bin:<color>"，不再做任何“高度”假设。
+
+cd ros_nd2
+colcon build --symlink-install
+source install/setup.bash
+
+# run camera:
+ros2 launch realsense2_camera rs_launch.py \
+  enable_color:=true \
+  enable_depth:=true \
+  align_depth.enable:=true \
+  enable_sync:=true
+  
+# pay attention to yaml_path
+# run color detect node:
+ros2 run color_blob_vision color_blob_detector --ros-args \
+  -p yaml_path:=/home/student24/robotproject/tools/color_ranges.yaml \
+  -p image_topic:=/camera/camera/color/image_raw \
+  -p output_topic:=/color_blobs \
+  -p min_area:=1200 \
+  -p kernel_size:=5 \
+  -p resize_factor:=1.0
+
+# run depth to 3d
+ros2 run color_blob_vision blob_depth_to_3d → smoothed 版（默认）
+ros2 run color_blob_vision blob_depth_to_3d_raw → 旧版（可选回退）
+ros2 run color_blob_vision blob_depth_to_3d --ros-args \
+  -p camera_info_topic:=/camera/camera/color/camera_info \
+  -p depth_topic:=/camera/camera/aligned_depth_to_color/image_raw \
+  -p blobs_2d_topic:=/color_blobs \
+  -p output_topic:=/color_blobs_3d
+
+
+# get output
+ros2 run color_blob_vision color_blob_summary \
+  --ros-args \
+    -p input_topic:=/color_blobs_3d \
+    -p print_interval:=1.0
+    
+# run visualisation
+ros2 run color_blob_vision color_blob_debug_image --ros-args \
+  -p image_topic:=/camera/camera/color/image_raw \
+  -p blobs_topic:=/color_blobs \
+  -p output_topic:=/color_blobs/debug_image \
+  -p yaml_path:=/home/student24/robotproject/tools/color_ranges.yaml
+
+rqt
+然后在菜单里：
+Plugins → Visualization → Image View
+
+# run localisation
+ros2 run color_blob_vision color_blob_markers --ros-args \
+  -p input_topic:=/color_blobs_3d \
+  -p output_topic:=/color_blobs_markers
+
+开 RViz2：
+
+rviz2
+
+Fixed Frame 选：camera_color_optical_frame（或你消息 header 里的 frame）
+Add -> MarkerArray
+Topic 选：/color_blobs_markers
+配置在color.rviz
+
+# 导航到白色bin
+ros2 launch color_blob_vision find_white_bin.launch.py
+这会启动：
+color_blob_detector_white
+blob_depth_to_3d_white
+输出话题：/color_blobs、/color_blobs_3d（里边有 bin:white 的 3D 坐标）。
+如果你要看 2D 检测效果，还可以（可选）起 color_blob_debug_image：
+ros2 run color_blob_vision color_blob_debug_image
+
+#开始识别彩色block
+ros2 launch color_blob_vision pick_and_place_blocks.launch.py
+这会启动：
+color_blob_detector_full
+blob_depth_to_3d_full
+color_blob_markers
+color_blob_summary
+输出的 3D 结果话题：/color_blobs_3d，里面有 block:<color> 和 bin:<color>。

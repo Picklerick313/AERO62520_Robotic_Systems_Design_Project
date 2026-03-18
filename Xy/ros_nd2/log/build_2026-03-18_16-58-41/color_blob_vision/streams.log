@@ -1,0 +1,27 @@
+[0.684s] Invoking command in '/home/student24/robotproject/ros_nd2/src/color_blob_vision': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/student24/robotproject/ros_nd2/build/color_blob_vision/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/color_blob_vision build --build-base /home/student24/robotproject/ros_nd2/build/color_blob_vision/build install --record /home/student24/robotproject/ros_nd2/build/color_blob_vision/install.log --single-version-externally-managed install_data
+[0.902s] running egg_info
+[0.916s] writing ../../build/color_blob_vision/color_blob_vision.egg-info/PKG-INFO
+[0.916s] writing dependency_links to ../../build/color_blob_vision/color_blob_vision.egg-info/dependency_links.txt
+[0.916s] writing entry points to ../../build/color_blob_vision/color_blob_vision.egg-info/entry_points.txt
+[0.917s] writing requirements to ../../build/color_blob_vision/color_blob_vision.egg-info/requires.txt
+[0.917s] writing top-level names to ../../build/color_blob_vision/color_blob_vision.egg-info/top_level.txt
+[0.962s] reading manifest file '../../build/color_blob_vision/color_blob_vision.egg-info/SOURCES.txt'
+[0.962s] writing manifest file '../../build/color_blob_vision/color_blob_vision.egg-info/SOURCES.txt'
+[0.963s] running build
+[0.963s] running build_py
+[0.963s] running install
+[0.968s] running install_lib
+[0.982s] running install_data
+[0.983s] copying launch/find_white_bin.launch.py -> /home/student24/robotproject/ros_nd2/install/color_blob_vision/share/color_blob_vision/launch
+[0.983s] copying launch/pick_and_place_blocks.launch.py -> /home/student24/robotproject/ros_nd2/install/color_blob_vision/share/color_blob_vision/launch
+[0.983s] running install_egg_info
+[0.999s] removing '/home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/python3.12/site-packages/color_blob_vision-0.0.0-py3.12.egg-info' (and everything under it)
+[0.999s] Copying ../../build/color_blob_vision/color_blob_vision.egg-info to /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/python3.12/site-packages/color_blob_vision-0.0.0-py3.12.egg-info
+[1.000s] running install_scripts
+[1.098s] Installing blob_depth_to_3d script to /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/color_blob_vision
+[1.098s] Installing color_blob_debug_image script to /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/color_blob_vision
+[1.098s] Installing color_blob_detector script to /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/color_blob_vision
+[1.098s] Installing color_blob_markers script to /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/color_blob_vision
+[1.098s] Installing color_blob_summary script to /home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/color_blob_vision
+[1.099s] writing list of installed files to '/home/student24/robotproject/ros_nd2/build/color_blob_vision/install.log'
+[1.123s] Invoked command in '/home/student24/robotproject/ros_nd2/src/color_blob_vision' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/student24/robotproject/ros_nd2/build/color_blob_vision/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/student24/robotproject/ros_nd2/install/color_blob_vision/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/color_blob_vision build --build-base /home/student24/robotproject/ros_nd2/build/color_blob_vision/build install --record /home/student24/robotproject/ros_nd2/build/color_blob_vision/install.log --single-version-externally-managed install_data

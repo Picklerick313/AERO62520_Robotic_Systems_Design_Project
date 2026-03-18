@@ -1,201 +1,372 @@
-# Robot Vision Project
+# color_blob_vision
 
-A robot vision detection system based on YOLO and HSV color space, used to detect and recognize objects with different shapes and colors.
+A ROS 2 vision package for **color blob detection, 3D localization, and object classification** in robot manipulation tasks.
+This project is designed for workflows such as **finding white bins, detecting colored blocks, estimating 3D positions from depth images, and supporting pick-and-place tasks**.
 
-## Project Overview
+The system is organized into two main stages:
 
-This project can detect geometric shapes (cube, rectangle prism, triangle prism, cylinder, arch) and recognize colors using HSV color space (red, blue, yellow, etc.). The system can process images, video streams, and live camera input.
+* **Stage A: White bin detection**
 
-## Main Features
+  * Used in navigation or search mode, where only white bins are detected.
+* **Stage B: Colored block / bin detection**
 
-- **Shape Detection**：Use YOLO model to detect 5 geometric shapes
-- **Color Recognition**：Color classification based on HSV color space
-- **Combined Inference**：Output both shape and color information
-- **Dataset Processing**：Analyze, split, and label dataset
-- **RRealSense Support**：Extract frames from RealSense bag files
+  * Used in manipulation mode, where red, blue, yellow, and white objects are detected and classified as either blocks or bins.
+
+---
+
+## Features
+
+### 1. 2D Color Blob Detection
+
+The package uses HSV-based image segmentation to detect colored blobs from RGB images and publishes the results as `vision_msgs/Detection2DArray`.
+
+Each 2D detection includes:
+
+* color label (for example, `blob:red`)
+* 2D center position
+* bounding box size
+* in-plane orientation angle estimated from the minimum-area rectangle
+
+### 2. 3D Projection from Depth
+
+The package combines 2D detections, aligned depth images, and camera intrinsics to estimate:
+
+* 3D position `(x, y, z)` in the camera frame
+* yaw angle for object orientation
+
+It also uses estimated object size in 3D to classify detections as:
+
+* `block:<color>`
+* `bin:<color>`
+
+### 3. Multi-frame Smoothing and Confirmation
+
+The 3D node includes lightweight tracking and exponential moving average smoothing to:
+
+* reduce false positives
+* confirm detections across multiple frames
+* stabilize 3D position and orientation estimates
+* improve block/bin classification consistency
+
+### 4. Debugging and Visualization Tools
+
+The package also provides several helper nodes:
+
+* **color_blob_summary**: prints detected object information in the terminal
+* **color_blob_markers**: publishes RViz markers for visualization
+* **color_blob_debug_image**: overlays bounding boxes, labels, centers, and angles on the image
+
+---
 
 ## Project Structure
 
-```
-robotproject/
-├── datasets/              # Dataset folder
-│   └── shapes/            # Shape detection dataset
-│       ├── images/        # Training/validation/testing images
-│       ├── labels/        # YOLO format labels
-│       └── data.yaml      # Dataset configuration
-├── tools/                 # Tool scripts
-│   ├── color_utils.py           # HSV color estimation class
-│   ├── color_labeling_tool.py   # Color labeling tool
-│   ├── color_evaluate.py        # Color recognition evaluation
-│   ├── infer_yolo_hsv.py        # YOLO + HSV combined inference
-│   ├── analyze_dataset.py       # Dataset analysis
-│   ├── split_yolo_dataset.py    # Dataset splitting tool
-│   ├── rs_bag_to_frames.py      # RealSense bag to frames
-│   ├── extract_frames_dedup.py  # Frame extraction and deduplication
-│   ├── hsv_calibrate.py         # HSV color calibration
-│   ├── hsv_adjust.py            # HSV parameter adjustment
-│   └── color_ranges.yaml        # HSV color range configuration
-├── runs/                  # Training and inference results
-│   └── detect/            # YOLO detection results
-├── outputs/               # Output folder
-└── env_robot/             # Python virtual environment
+```bash
+color_blob_vision/
+├── launch/
+│   ├── find_white_bin.launch.py
+│   └── pick_and_place_blocks.launch.py
+├── color_blob_vision/
+│   ├── color_blob_detector.py
+│   ├── blob_depth_to_3d_smoothed.py
+│   ├── color_blob_summary.py
+│   ├── color_blob_markers.py
+│   └── color_blob_debug_image.py
+├── package.xml
+├── setup.py
+└── README.md
 ```
 
-## Environment Requirement
+---
 
-### Python Version
-- Python 3.12
+## Nodes
 
-### Main Dependencies
-- `ultralytics` - YOLO model training and inference
-- `opencv-python` - Image processing
-- `numpy` - Numerical computing
-- `pyyaml` - Config file parsing
-- `pyrealsense2` - RealSense camera support (optional)
+### `color_blob_detector`
 
-## Dataset
+A 2D color blob detection node.
 
-### Dataset Format
+**Input:**
 
-The dataset uses YOLO format：
-- Images：`images/train/`, `images/val/`, `images/test/`
-- Labels：`labels/train/`, `labels/val/`, `labels/test/`
-- Config：`data.yaml`
+* RGB image topic (default example: `/camera/camera/color/image_raw`)
+
+**Output:**
+
+* `/color_blobs` (`vision_msgs/Detection2DArray`)
+
+**Main functionality:**
+
+* loads HSV thresholds from a YAML file
+* supports multiple HSV ranges for a single color
+* applies minimum area filtering and morphological operations
+* estimates object orientation and stores it in `bbox.center.theta`
+
+---
+
+### `blob_depth_to_3d`
+
+A 3D projection node.
+In this project, the default executable points to the smoothed version.
+
+**Input:**
+
+* aligned depth image
+* camera intrinsic parameters
+* `/color_blobs`
+
+**Output:**
+
+* `/color_blobs_3d` (`vision_msgs/Detection3DArray`)
+
+**Main functionality:**
+
+* estimates depth using the median value of a depth patch
+* computes 3D position from image coordinates and depth
+* estimates physical object size
+* classifies objects as blocks or bins
+* applies lightweight tracking, confirmation, and EMA smoothing
+
+---
+
+### `color_blob_summary`
+
+A terminal debugging node.
+
+**Input:**
+
+* `/color_blobs_3d`
+
+**Output:**
+
+* console logs showing object color, 3D position, yaw, and score
+
+---
+
+### `color_blob_markers`
+
+An RViz visualization node.
+
+**Input:**
+
+* `/color_blobs_3d`
+
+**Output:**
+
+* `/color_blobs_markers` (`visualization_msgs/MarkerArray`)
+
+---
+
+### `color_blob_debug_image`
+
+An image debugging node.
+
+**Input:**
+
+* raw color image
+* `/color_blobs`
+
+**Output:**
+
+* `/color_blobs/debug_image`
+
+**Functionality:**
+
+* draws bounding boxes, labels, confidence scores, and centers
+* re-runs contour extraction inside the ROI
+* visualizes rotated rectangles and principal axes for angle debugging
+
+---
+
+## Launch Files
+
+### `find_white_bin.launch.py`
+
+Used for **Stage A: white bin detection**, typically during navigation or search.
+
+This launch file:
+
+* enables only the white HSV configuration
+* runs 2D detection and 3D projection
+* outputs white bin detections for downstream navigation logic
+
+---
+
+### `pick_and_place_blocks.launch.py`
+
+Used for **Stage B: colored block and bin detection**, typically during manipulation.
+
+This launch file:
+
+* detects `red`, `blue`, `yellow`, and `white`
+* classifies objects as either `block:<color>` or `bin:<color>`
+* can optionally launch:
+
+  * `color_blob_markers`
+  * `color_blob_summary`
+
+---
+
+## Dependencies
+
+This package is a ROS 2 Python package and depends on:
+
+* `rclpy`
+* `sensor_msgs`
+* `vision_msgs`
+* `visualization_msgs`
+* `cv_bridge`
+* `message_filters`
+* `OpenCV (cv2)`
+* `numpy`
+* `PyYAML`
+
+The default topics in the current codebase are compatible with a RealSense-style setup, for example:
+
+* `/camera/camera/color/image_raw`
+* `/camera/camera/color/camera_info`
+* `/camera/camera/aligned_depth_to_color/image_raw`
+
+---
+
+## Build and Installation
+
+Place the package inside the `src/` directory of your ROS 2 workspace, then build it with:
+
+```bash
+cd ~/your_ros2_ws
+colcon build --packages-select color_blob_vision
+source install/setup.bash
+```
+
+---
 
 ## Usage
 
-### 1. Dataset Analysis
-
-Count number of samples for each class：
+### A. Detect only white bins
 
 ```bash
-python tools/analyze_dataset.py datasets/shapes/data.yaml
+ros2 launch color_blob_vision find_white_bin.launch.py
 ```
 
-### 2. Dataset Split
+This mode is intended for navigation or search tasks.
 
-Split dataset into train, validation, and test sets：
+Relevant output topics:
+
+* `/color_blobs`
+* `/color_blobs_3d`
+
+A downstream navigation module can subscribe to `/color_blobs_3d` and filter detections by:
+
+```text
+class_id == "bin:white"
+```
+
+---
+
+### B. Detect colored blocks and bins
 
 ```bash
-python tools/split_yolo_dataset.py \
-  --images datasets/shapes/images_all/images \
-  --labels datasets/shapes/images_all/labels \
-  --out datasets/shapes \
-  --train 0.8 --val 0.1 --test 0.1
+ros2 launch color_blob_vision pick_and_place_blocks.launch.py
 ```
 
-### 3. Train YOLO Model
+This mode is intended for pick-and-place tasks.
 
-Use Ultralytics to train the model型：
-
-```python
-from ultralytics import YOLO
-
-model = YOLO('yolov8n.pt')  # 或 yolov8s.pt, yolov8m.pt 等
-model.train(
-    data='datasets/shapes/data.yaml',
-    epochs=100,
-    imgsz=416,
-    batch=16
-)
-```
-
-### 4. Color Calibration
-
-Calibrate HSV color ranges：
+To enable RViz markers as well:
 
 ```bash
-python tools/hsv_calibrate.py
+ros2 launch color_blob_vision pick_and_place_blocks.launch.py use_markers:=true
 ```
 
-### 5. Combined Inference (Shape + Color)
+---
 
-Use trained YOLO model and HSV color recognition for inference：
+## Important Parameters
 
-```bash
-python tools/infer_yolo_hsv.py \
-  --model runs/detect/train13/weights/best.pt \
-  --source 0 \
-  --hsv-config tools/color_ranges.yaml \
-  --conf 0.25
-```
+### `color_blob_detector`
 
-### 6. Color Labeling
+* `yaml_path`: path to the HSV configuration file
+* `image_topic`: input image topic
+* `output_topic`: output topic for 2D detections
+* `min_area`: minimum contour area
+* `kernel_size`: morphology kernel size
+* `resize_factor`: image downscaling factor
 
-Label colors of detected objects：
+### `blob_depth_to_3d`
 
-```bash
-python tools/color_labeling_tool.py
-```
+* `depth_topic`
+* `camera_info_topic`
+* `blobs_2d_topic`
+* `output_topic`
+* `patch_radius`
+* `depth_min_m`
+* `depth_max_m`
+* `block_size_max_m`
+* `bin_size_min_m`
+* `bin_size_max_m`
 
-### 7. RealSense Frame Extraction
+Tracking and smoothing parameters include:
 
-Extract frames from RealSense bag files：
+* `block_match_dist_m`
+* `bin_match_dist_m`
+* `confirm_hits_block`
+* `confirm_hits_bin`
+* `max_misses_block`
+* `max_misses_bin`
+* `pos_alpha_block`
+* `pos_alpha_bin`
+* `yaw_alpha_block`
+* `yaw_alpha_bin`
 
-```bash
-python tools/rs_bag_to_frames.py \
-  --bag path/to/your.bag \
-  --out datasets/shapes/images_all \
-  --fps 1.0 \
-  --class-name cube \
-  --scene scene1_bright
-```
+---
 
-## Config Files
+## Output Format
 
-### data.yaml
+### 2D Detection Output
 
-Dataset configuration：
+Each detection in `/color_blobs` contains information such as:
 
-```yaml
-path: /home/student24/robotproject/datasets/shapes
-train: images/train
-val: images/val
-test: images/test
-names:
-  0: cube
-  1: rectangle_prism
-  2: triangle_prism
-  3: cylinder
-  4: arch
-```
+* `class_id = "blob:red"`
+* `bbox.center.position = (u, v)`
+* `bbox.size_x, bbox.size_y`
+* `bbox.center.theta = grasp orientation angle in radians`
 
-### color_ranges.yaml
+### 3D Detection Output
 
-HSV color range configuration：
+Each detection in `/color_blobs_3d` contains information such as:
 
-```yaml
-red:
-  - [0, 120, 70, 10, 255, 255]
-  - [170, 120, 70, 180, 255, 255]
+* `class_id = "block:red"` or `"bin:white"`
+* `pose.position = (x, y, z)` in meters
+* `pose.orientation = quaternion converted from yaw`
 
-blue:
-  - [90, 50, 50, 130, 255, 255]
+---
 
-yellow:
-  - [20, 80, 80, 35, 255, 255]
+## Application Scenarios
 
-color_ratio_threshold:
-  default: 0.18
-  blue: 0.10
-```
+This package can be used for:
 
-## Core Module
+* robot visual navigation
+* color-based object detection
+* block and bin classification
+* robotic pick-and-place tasks
+* lightweight RGB-D perception experiments
 
-### HSVColorEstimator
+---
 
-Class in color_utils.py for HSV color estimation：
+## Possible Future Improvements
 
-- `estimate_from_roi(bgr_roi)`: Estimate color from ROI
-- `estimate_from_mask(bgr_img, mask)`: Estimate color from mask
-- Support H channel wrapping (for red)
-- Automatic morphological denoising
+* support more color categories
+* improve robustness under changing lighting conditions
+* add stronger temporal filtering such as a Kalman filter
+* integrate TF transforms to publish detections in the robot base frame
+* connect the output to a grasp planner or task-level controller
+* make YAML configuration and topic management more modular
 
-## Training Results
+---
 
-Training results are saved in runs/detect/ including：
-- Training curves
-- Confusion matrix
-- Validation results
-- Model weights
+## Notes
 
+In the current version, some launch files use absolute local file paths for YAML configuration files.
+For better portability, these configuration files should ideally be moved into the package and loaded using package share paths.
+
+---
+
+## Author
+
+Maintainer: `Kyra`
