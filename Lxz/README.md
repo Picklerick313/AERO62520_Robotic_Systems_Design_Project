@@ -1,4 +1,4 @@
-````markdown
+
 ![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy-34A853?logo=ros&logoColor=white)
 ![MoveIt 2](https://img.shields.io/badge/MoveIt-2-02BEEF?logo=ros&logoColor=white)
 ![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
