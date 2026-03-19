@@ -1,259 +1,183 @@
-# Ans
-# Leo Rover – Navigation & Mapping (ROS2 Jazzy)
+# SLAMTEC LIDAR ROS2 Package
 
-# Important : This page is under construction
+ROS2 node for SLAMTEC LIDAR
 
-This repository contains the full navigation and mapping pipeline used to enable a Leo Rover to explore an unknown environment, detect colored objects, and navigate to colored bins. It includes:
+Visit following Website for more details about SLAMTEC LIDAR:
 
-- Low-level networking between NUC ↔ Raspberry Pi  
-- Lidar integration  
-- SLAM mapping (Slam Toolbox)  
-- Map saving and reuse  
-- Localization (AMCL)  
-- Navigation (Nav2)  
-- Sensor fusion (IMU + odom + lidar)  
-- System bring-up and recovery instructions  
+SLAMTEC LIDAR roswiki: <http://wiki.ros.org/rplidar>
 
-This documentation is designed to help:
-1. Track code and configuration development.  
-2. Recover the system quickly after hardware failure.  
-3. Allow anyone to replicate the entire system with minimal expertise.
+SLAMTEC LIDAR HomePage: <http://www.slamtec.com/en/Lidar>
 
----
+SLAMTEC LIDAR SDK: <https://github.com/Slamtec/rplidar_sdk>
 
-# 1. Clone This Repository
+SLAMTEC LIDAR Tutorial: <https://github.com/robopeak/rplidar_ros/wiki>
+
+## Supported SLAMTEC LIDAR
+
+| Lidar Model |
+| ---------------------- |
+|RPLIDAR A1              |
+|RPLIDAR A2              |
+|RPLIDAR A3              |
+|RPLIDAR S1              |
+|RPLIDAR S2              |
+|RPLIDAR S2E             |
+|RPLIDAR S3              |
+|RPLIDAR T1              |
+|RPLIDAR C1              |
+
+## How to install ROS2
+
+[rolling](https://docs.ros.org/en/rolling/Installation.html),
+[humble](https://docs.ros.org/en/humble/Installation.html),
+[galactic](https://docs.ros.org/en/galactic/Installation.html),
+[foxy](https://docs.ros.org/en/foxy/Installation.html)
+
+## How to configuring your ROS 2 environment
+
+[Configuring your ROS 2 environment](https://docs.ros.org/en/foxy/Tutorials/Configuring-ROS2-Environment.html)
+
+## How to Create a ROS2 workspace
+
+[ROS2 Tutorials Creating a workspace](https://docs.ros.org/en/foxy/Tutorials/Workspace/Creating-A-Workspace.html)
+
+1. example, choose the directory name ros2_ws, for "development workspace" :
+
+   ```bash
+   mkdir -p ~/ros2_ws/src
+   cd ~/ros2_ws/src
+   ```
+
+## Compile & Install rplidar_ros package
+
+1. Clone rplidar_ros package from github
+
+   Ensure you're still in the ros2_ws/src directory before you clone:
+
+   ```bash
+   git clone -b ros2 https://github.com/Slamtec/rplidar_ros.git
+   ```
+
+2. Build rpidar_ros package
+
+   From the root of your workspace (ros2_ws), you can now build rplidar_ros package using the command:
+
+   ```bash
+   cd ~/ros2_ws/
+   source /opt/ros/<rosdistro>/setup.bash
+   colcon build --symlink-install
+   ```
+
+   if you find output like "colcon:command not found",you need separate [install colcon](https://docs.ros.org/en/foxy/Tutorials/Colcon-Tutorial.html#install-colcon) build tools.
+
+3. Package environment setup
+
+    ```bash
+    source ./install/setup.bash
+    ```
+
+    Note: Add permanent workspace environment variables.
+    It's convenientif the ROS2 environment variables are automatically added to your bash session every time a new shell is launched:
+
+    ```bash
+    $echo "source <your_own_ros2_ws>/install/setup.bash" >> ~/.bashrc
+    $source ~/.bashrc
+    ```
+
+4. Create udev rules for rplidar
+
+   rplidar_ros running requires the read and write permissions of the serial device.
+   You can manually modify it with the following command:
+
+   ```bash
+   sudo chmod 777 /dev/ttyUSB0
+   ```
+
+   But a better way is to create a udev rule:
+
+   ```bash
+   cd src/rpldiar_ros/
+   source scripts/create_udev_rules.sh
+   ```
+
+## Run rplidar_ros
+
+### Run rplidar node and view in the rviz
+
+The command for RPLIDAR A1 is :
 
 ```bash
-git clone https://github.com/Picklerick313/AERO62520_Robotic_Systems_Design_Project.git
-cd AERO62520_Robotic_Systems_Design_Project/Ans
+ros2 launch rplidar_ros view_rplidar_a1_launch.py
 ```
 
----
-
-# 2. Repository Structure
-
-```
-Ans/
-├── README.md
-├── docs/
-│   ├── 00_system_setup_progress.md
-│   ├── 01_nuc_configuration.md
-│   ├── 02_pi_configuration.md
-│   ├── 03_sensor_fusion.md
-│   ├── 04_slam_mapping.md
-│   ├── 05_localization_nav2.md
-├── config/
-│   ├── netplan_nuc.yaml
-│   ├── netplan_pi.yaml
-│   ├── slam_toolbox_params.yaml
-│   ├── nav2_params.yaml
-│   └── amcl_params.yaml
-├── launch/
-│   ├── slam_launch.py
-│   ├── nav2_bringup_launch.py
-├── scripts/
-│   └── save_map.sh
-├── src/
-│   ├── detection/
-│   ├── mapping/
-│   └── navigation/
-├── data/
-│   ├── maps/
-│   └── rosbags/
-└── tests/
-    └── verification_checklist.md
-```
-
----
-
-# 3. QUICKSTART (MOST IMPORTANT SECTION)
-
-Follow these exact steps on the **NUC**.
-
----
-
-## 3.1 Setup ROS2 Environment
+The command for RPLIDAR A2M7 is :
 
 ```bash
-echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
-echo "export ROS_DOMAIN_ID=10" >> ~/.bashrc
-echo "export ROS_LOCALHOST_ONLY=0" >> ~/.bashrc
-source ~/.bashrc
+ros2 launch rplidar_ros view_rplidar_a2m7_launch.py
 ```
 
----
-
-## 3.2 Setup Workspace
+The command for RPLIDAR A2M8 is :
 
 ```bash
-mkdir -p ~/ros2_ws/src
-cd ~/ros2_ws/src
-ln -s ~/AERO62520_Robotic_Systems_Design_Project/Ans/src .
-cd ~/ros2_ws
-colcon build --symlink-install
-source install/setup.bash
+ros2 launch rplidar_ros view_rplidar_a2m8_launch.py
 ```
 
----
-
-## 3.3 Launch Lidar
+The command for RPLIDAR A2M12 is :
 
 ```bash
 ros2 launch rplidar_ros view_rplidar_a2m12_launch.py
 ```
 
-Verify in RViz:
-- Fixed frame = **laser**
-- Topic = **/scan**
-
----
-
-## 3.4 Run SLAM Toolbox
+The command for RPLIDAR A3 is :
 
 ```bash
-ros2 launch Ans/launch/slam_launch.py
+ros2 launch rplidar_ros view_rplidar_a3_launch.py
 ```
 
-Open RViz in another window:
+The command for RPLIDAR S1 is :
 
 ```bash
-rviz2
+ros2 launch rplidar_ros view_rplidar_s1_launch.py
 ```
 
-Set:
-- Fixed Frame: **map**
-- Add LaserScan → `/scan`
-- Add Map
-
----
-
-## 3.5 Drive Robot to Build Map
+The command for RPLIDAR S1(TCP connection) is :
 
 ```bash
-ros2 run teleop_twist_keyboard teleop_twist_keyboard
+ros2 launch rplidar_ros view_rplidar_s1_tcp_launch.py
 ```
 
----
-
-## 3.6 Save Map
+The command for RPLIDAR S2 is :
 
 ```bash
-./Ans/scripts/save_map.sh /home/<youruser>/AERO62520_Robotic_Systems_Design_Project/Ans/data/maps/leo_map
+ros2 launch rplidar_ros view_rplidar_s2_launch.py
 ```
 
-This creates:
-
-```
-leo_map.pgm
-leo_map.yaml
-```
-
----
-
-## 3.7 Launch Nav2 with Saved Map
+The command for RPLIDAR S2E is :
 
 ```bash
-ros2 launch Ans/launch/nav2_bringup_launch.py map:=/home/<youruser>/AERO62520_Robotic_Systems_Design_Project/Ans/data/maps/leo_map.yaml
+ros2 launch rplidar_ros view_rplidar_s2e_launch.py
 ```
 
-In RViz:
-
-- Use **2D Pose Estimate** to initialize position  
-- Use **2D Nav Goal** to send navigation targets  
-
----
-
-# 4. Network Setup Summary
-
-### NUC (Static IP: 192.168.12.2)
-
-File: `/etc/netplan/01-nuc-eth.yaml`
-
-```yaml
-network:
-  version: 2
-  renderer: NetworkManager
-  ethernets:
-    enp114s0:
-      addresses:
-        - 192.168.12.2/24
-      dhcp4: no
-```
-
----
-
-### Raspberry Pi (Static IP: 192.168.12.1)
-
-File: `/etc/netplan/01-pi-eth.yaml` (replace interface name)
-
-```yaml
-network:
-  version: 2
-  renderer: networkd
-  ethernets:
-    <PI_INTERFACE>:
-      addresses:
-        - 192.168.12.1/24
-      dhcp4: no
-```
-
----
-
-# 5. Sensor Fusion Requirements
-
-- `/odom` from Pi  
-- `/firmware/imu` from Pi  
-- `/scan` from NUC Lidar  
-- TF tree must contain:  
-  `map → odom → base_link → laser`
-
-See docs/03_sensor_fusion.md for instructions.
-
----
-
-# 6. Object Detection Module
-
-Pipeline:
-1. Camera frame → detect color blob  
-2. Convert pixel to point in camera frame  
-3. Use TF to convert camera → map  
-4. Publish Pose → Nav2 Goal  
-
-See docs/06_object_detection.md for reference implementation.
-
----
-
-# 7. Recovery Steps
-
-If hardware fails:
-```bash
-git clone https://github.com/Picklerick313/AERO62520_Robotic_Systems_Design_Project.git
-cd Ans
-```
-
-Rebuild workspace:
+The command for RPLIDAR S3 is :
 
 ```bash
-cd ~/ros2_ws
-colcon build --symlink-install
-source install/setup.bash
+ros2 launch rplidar_ros view_rplidar_s3_launch.py
 ```
 
-Reapply netplan files if needed.
+The command for RPLIDAR T1 is :
 
----
+```bash
+ros2 launch rplidar_ros view_rplidar_t1_launch.py
+```
 
-# 8. Progress Log (Fill Continuously)
+The command for RPLIDAR C1 is :
 
-See docs/00_system_setup_progress.md  
-Add dates + screenshots + commands run.
+```bash
+ros2 launch rplidar_ros view_rplidar_c1_launch.py
+```
 
----
+Notice: different lidar use different serial_baudrate.
 
-# 9. Verification Checklist
+## RPLIDAR frame
 
-See tests/verification_checklist.md
-
----
-
-
+RPLIDAR frame must be broadcasted according to picture shown in rplidar-frame.png
