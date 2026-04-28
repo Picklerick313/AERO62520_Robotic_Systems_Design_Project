@@ -2,7 +2,7 @@
 
 This document describes the main state transition logic of the robot system.
 
-
+```text
 ┌────────────┐
 │    INIT    │
 └─────┬──────┘
@@ -107,3 +107,4 @@ This document describes the main state transition logic of the robot system.
       └── fail_place_count == 3
               ↓
           RECOVERY
+```
