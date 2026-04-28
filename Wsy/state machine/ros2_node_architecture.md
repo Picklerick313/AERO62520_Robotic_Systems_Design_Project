@@ -2,7 +2,7 @@
 
 This document describes the main ROS2 nodes, actions, and services used in the robot system.
 
-
+```text
 robot_state_machine_node
 │
 ├── mapping_manager_node
@@ -34,3 +34,4 @@ robot_state_machine_node
 │
 └── operator_interface_node
     └── recovery command service / topic
+```
