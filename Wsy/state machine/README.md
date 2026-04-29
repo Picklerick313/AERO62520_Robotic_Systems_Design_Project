@@ -1,8 +1,8 @@
-# Robot State Machine
+# State Machine
 
 ## Overview
 
-This repository contains the preliminary ROS 2 state machine logic for a mobile manipulation robot based on a LeoRover platform with an Elephant robot arm mounted on top.
+This repository contains the ROS 2 state machine logic for a mobile manipulation robot based on a LeoRover platform with an Elephant robot arm mounted on top.
 
 The robot is designed to complete the following mission:
 
