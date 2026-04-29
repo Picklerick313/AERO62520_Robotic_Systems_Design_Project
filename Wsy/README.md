@@ -1,4 +1,4 @@
-# State Machine
+# Preliminary design of state machine
 
 ## Overview
 This repository contains the preliminary state machine logic for the robot to navigate, detect, grasp, and place blocks into designated bins. The architecture is divided into four main operational phases: **Preparation**, **Collecting**, **Placing**, and **Recovery**.
