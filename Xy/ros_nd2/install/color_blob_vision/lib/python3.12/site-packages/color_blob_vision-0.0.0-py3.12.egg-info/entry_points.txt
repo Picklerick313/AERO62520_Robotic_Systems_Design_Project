@@ -1,7 +1,0 @@
-[console_scripts]
-blob_depth_to_3d = color_blob_vision.blob_depth_to_3d_smoothed:main
-blob_depth_to_3d_raw = color_blob_vision.blob_depth_to_3d:main
-color_blob_debug_image = color_blob_vision.color_blob_debug_image:main
-color_blob_detector = color_blob_vision.color_blob_detector:main
-color_blob_markers = color_blob_vision.color_blob_markers:main
-color_blob_summary = color_blob_vision.color_blob_summary:main

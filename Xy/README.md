@@ -1,222 +1,132 @@
-# color_blob_vision
+# Xy `src` Contribution Overview
 
-A ROS 2 vision package for **color blob detection, 3D localization, and object classification** in robot manipulation tasks.
-This project is designed for workflows such as **finding white bins, detecting colored blocks, estimating 3D positions from depth images, and supporting pick-and-place tasks**.
+This README describes the work contributed in `Xy/ros_nd2/src`, rather than the whole repository.
 
-The system is organized into two main stages:
+The focus of this part is the ROS 2 perception pipeline that supports:
 
-* **Stage A: White bin detection**
-
-  * Used in navigation or search mode, where only white bins are detected.
-* **Stage B: Colored block / bin detection**
-
-  * Used in manipulation mode, where red, blue, yellow, and white objects are detected and classified as either blocks or bins.
+* white bin detection for navigation/search
+* colored block and bin detection for manipulation
+* 3D localization from aligned depth
+* handoff from perception to navigation and manipulator logic
 
 ---
 
-## Features
+## What Was Implemented
 
-### 1. 2D Color Blob Detection
+The `src` workspace is centered on the `color_blob_vision` package and the launch/documentation files around it.
 
-The package uses HSV-based image segmentation to detect colored blobs from RGB images and publishes the results as `vision_msgs/Detection2DArray`.
+The contribution includes:
 
-Each 2D detection includes:
-
-* color label (for example, `blob:red`)
-* 2D center position
-* bounding box size
-* in-plane orientation angle estimated from the minimum-area rectangle
-
-### 2. 3D Projection from Depth
-
-The package combines 2D detections, aligned depth images, and camera intrinsics to estimate:
-
-* 3D position `(x, y, z)` in the camera frame
-* yaw angle for object orientation
-
-It also uses estimated object size in 3D to classify detections as:
-
-* `block:<color>`
-* `bin:<color>`
-
-### 3. Multi-frame Smoothing and Confirmation
-
-The 3D node includes lightweight tracking and exponential moving average smoothing to:
-
-* reduce false positives
-* confirm detections across multiple frames
-* stabilize 3D position and orientation estimates
-* improve block/bin classification consistency
-
-### 4. Debugging and Visualization Tools
-
-The package also provides several helper nodes:
-
-* **color_blob_summary**: prints detected object information in the terminal
-* **color_blob_markers**: publishes RViz markers for visualization
-* **color_blob_debug_image**: overlays bounding boxes, labels, centers, and angles on the image
+* HSV-based 2D color blob detection from RGB images
+* depth-based 3D projection for object position estimation
+* block/bin classification using projected size cues
+* temporal smoothing and confirmation to improve output stability
+* debug tools for terminal output, RViz markers, and annotated images
+* launch flows for both white-bin search and colored pick-and-place
+* manager nodes to support integrated runtime coordination
+* handoff notes explaining how this perception pipeline connects to navigation and manipulation
 
 ---
 
-## Project Structure
+## Source Structure
 
 ```bash
-color_blob_vision/
-├── launch/
-│   ├── find_white_bin.launch.py
-│   └── pick_and_place_blocks.launch.py
+Xy/ros_nd2/src/color_blob_vision/
 ├── color_blob_vision/
 │   ├── color_blob_detector.py
+│   ├── blob_depth_to_3d.py
 │   ├── blob_depth_to_3d_smoothed.py
+│   ├── perception_manager.py
+│   ├── task_manager.py
+│   ├── color_blob_run_recorder.py
 │   ├── color_blob_summary.py
 │   ├── color_blob_markers.py
 │   └── color_blob_debug_image.py
+├── launch/
+│   ├── find_white_bin.launch.py
+│   ├── pick_and_place_blocks.launch.py
+│   └── vision_pipeline_manager.launch.py
+├── test/
+├── manipulator_handoff.md
+├── navigation_handoff.md
+├── offline_vs_real_pipeline.md
 ├── package.xml
-├── setup.py
-└── README.md
+├── setup.cfg
+└── setup.py
 ```
 
 ---
 
-## Nodes
+## Main Functional Parts
 
-### `color_blob_detector`
+### 1. 2D Detection
 
-A 2D color blob detection node.
+`color_blob_detector.py` performs HSV-based segmentation and contour filtering, then publishes 2D detections as `vision_msgs/Detection2DArray`.
 
-**Input:**
+Each detection contains:
 
-* RGB image topic (default example: `/camera/camera/color/image_raw`)
+* a color label
+* center position in the image
+* bounding box size
+* orientation estimated from the rotated rectangle
 
-**Output:**
+### 2. 3D Localization
 
-* `/color_blobs` (`vision_msgs/Detection2DArray`)
+`blob_depth_to_3d.py` and `blob_depth_to_3d_smoothed.py` combine:
 
-**Main functionality:**
+* 2D detections
+* aligned depth images
+* camera intrinsics
 
-* loads HSV thresholds from a YAML file
-* supports multiple HSV ranges for a single color
-* applies minimum area filtering and morphological operations
-* estimates object orientation and stores it in `bbox.center.theta`
+to estimate:
 
----
+* 3D object position in the camera frame
+* yaw/orientation information
+* coarse object type such as `block:<color>` or `bin:<color>`
 
-### `blob_depth_to_3d`
+The smoothed variant also adds confirmation and temporal filtering to make detections more stable across frames.
 
-A 3D projection node.
-In this project, the default executable points to the smoothed version.
+### 3. Runtime Coordination
 
-**Input:**
+The newer files in this `src` contribution expand the pipeline beyond isolated nodes:
 
-* aligned depth image
-* camera intrinsic parameters
-* `/color_blobs`
+* `perception_manager.py` coordinates perception-related runtime behavior
+* `task_manager.py` supports higher-level task flow
+* `vision_pipeline_manager.launch.py` provides an integrated launch entry point
+* `color_blob_run_recorder.py` helps record or summarize runs for debugging and evaluation
 
-**Output:**
+### 4. Debugging and Integration Support
 
-* `/color_blobs_3d` (`vision_msgs/Detection3DArray`)
+To make the perception stack easier to inspect and connect with the rest of the robot system, this work also includes:
 
-**Main functionality:**
-
-* estimates depth using the median value of a depth patch
-* computes 3D position from image coordinates and depth
-* estimates physical object size
-* classifies objects as blocks or bins
-* applies lightweight tracking, confirmation, and EMA smoothing
-
----
-
-### `color_blob_summary`
-
-A terminal debugging node.
-
-**Input:**
-
-* `/color_blobs_3d`
-
-**Output:**
-
-* console logs showing object color, 3D position, yaw, and score
+* `color_blob_summary.py` for terminal summaries
+* `color_blob_markers.py` for RViz visualization
+* `color_blob_debug_image.py` for annotated image output
+* `navigation_handoff.md` for navigation-side integration notes
+* `manipulator_handoff.md` for manipulator-side integration notes
+* `offline_vs_real_pipeline.md` for explaining differences between offline and real deployment flows
 
 ---
 
-### `color_blob_markers`
+## Operating Modes
 
-An RViz visualization node.
+This `src` work supports two main modes:
 
-**Input:**
+### Stage A: White bin detection
 
-* `/color_blobs_3d`
+Used in navigation or search mode, where the system focuses on finding white bins and publishing the corresponding detections for downstream logic.
 
-**Output:**
+### Stage B: Colored object detection
 
-* `/color_blobs_markers` (`visualization_msgs/MarkerArray`)
-
----
-
-### `color_blob_debug_image`
-
-An image debugging node.
-
-**Input:**
-
-* raw color image
-* `/color_blobs`
-
-**Output:**
-
-* `/color_blobs/debug_image`
-
-**Functionality:**
-
-* draws bounding boxes, labels, confidence scores, and centers
-* re-runs contour extraction inside the ROI
-* visualizes rotated rectangles and principal axes for angle debugging
+Used in manipulation mode, where the pipeline detects `red`, `blue`, `yellow`, and `white` targets and classifies them as blocks or bins for pick-and-place tasks.
 
 ---
 
-## Launch Files
+## Repository Hygiene
 
-### `find_white_bin.launch.py`
+This area should mainly keep source and documentation.
 
-Used for **Stage A: white bin detection**, typically during navigation or search.
-
-This launch file:
-
-* enables only the white HSV configuration
-* runs 2D detection and 3D projection
-* outputs white bin detections for downstream navigation logic
-
----
-
-### `pick_and_place_blocks.launch.py`
-
-Used for **Stage B: colored block and bin detection**, typically during manipulation.
-
-This launch file:
-
-* detects `red`, `blue`, `yellow`, and `white`
-* classifies objects as either `block:<color>` or `bin:<color>`
-* can optionally launch:
-
-  * `color_blob_markers`
-  * `color_blob_summary`
-
----
-
-## Dependencies
-
-This package is a ROS 2 Python package and depends on:
-
-* `rclpy`
-* `sensor_msgs`
-* `vision_msgs`
-* `visualization_msgs`
-* `cv_bridge`
-* `message_filters`
-* `OpenCV (cv2)`
-* `numpy`
-* `PyYAML`
+Generated workspace artifacts such as `build/`, `install/`, `log/`, `__pycache__/`, and `*.pyc` should not be committed.
 
 The default topics in the current codebase are compatible with a RealSense-style setup, for example:
 
