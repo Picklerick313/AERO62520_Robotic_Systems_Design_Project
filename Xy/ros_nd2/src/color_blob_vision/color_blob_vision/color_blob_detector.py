@@ -47,6 +47,11 @@ class ColorBlobDetector(Node):
         self.declare_parameter("min_area", 1200)
         self.declare_parameter("kernel_size", 5)
         self.declare_parameter("resize_factor", 1.0)  # <1.0 可降分辨率加速
+        self.declare_parameter("min_score", 0.0)
+        self.declare_parameter("roi_x_min", 0.0)
+        self.declare_parameter("roi_x_max", 1.0)
+        self.declare_parameter("roi_y_min", 0.0)
+        self.declare_parameter("roi_y_max", 1.0)
 
         yaml_path = self.get_parameter("yaml_path").get_parameter_value().string_value
         image_topic = (
@@ -63,6 +68,21 @@ class ColorBlobDetector(Node):
         )
         self._resize_factor = (
             self.get_parameter("resize_factor").get_parameter_value().double_value
+        )
+        self._min_score = (
+            self.get_parameter("min_score").get_parameter_value().double_value
+        )
+        self._roi_x_min = (
+            self.get_parameter("roi_x_min").get_parameter_value().double_value
+        )
+        self._roi_x_max = (
+            self.get_parameter("roi_x_max").get_parameter_value().double_value
+        )
+        self._roi_y_min = (
+            self.get_parameter("roi_y_min").get_parameter_value().double_value
+        )
+        self._roi_y_max = (
+            self.get_parameter("roi_y_max").get_parameter_value().double_value
         )
 
         if self._resize_factor <= 0.0 or math.isinf(self._resize_factor):
@@ -97,7 +117,9 @@ class ColorBlobDetector(Node):
         self.get_logger().info(
             f"color_blob_detector started. yaml={yaml_path}, image_topic={image_topic}, "
             f"output_topic={output_topic}, min_area={self._min_area}, kernel={k}, "
-            f"resize_factor={self._resize_factor}"
+            f"resize_factor={self._resize_factor}, min_score={self._min_score}, "
+            f"roi=({self._roi_x_min:.2f}, {self._roi_y_min:.2f})-"
+            f"({self._roi_x_max:.2f}, {self._roi_y_max:.2f})"
         )
 
     # ------------------------------------------------------------------
@@ -210,6 +232,7 @@ class ColorBlobDetector(Node):
 
         hsv = cv2.cvtColor(bgr_proc, cv2.COLOR_BGR2HSV)
         h, w = hsv.shape[:2]
+        x_min, x_max, y_min, y_max = self._roi_bounds(w, h)
 
         det_array = Detection2DArray()
         det_array.header = msg.header
@@ -218,6 +241,7 @@ class ColorBlobDetector(Node):
 
         for color_name, segs in self._ranges.items():
             mask = self._build_mask(hsv, segs)
+            mask = self._apply_roi(mask, x_min, x_max, y_min, y_max)
 
             # 形态学去噪：开运算 + 闭运算
             mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self._kernel, iterations=1)
@@ -230,6 +254,9 @@ class ColorBlobDetector(Node):
             for cnt in contours:
                 area = float(cv2.contourArea(cnt))
                 if area < float(self._min_area):
+                    continue
+                score = float(area / total_pixels) if total_pixels > 0 else 0.0
+                if score < float(self._min_score):
                     continue
 
                 x, y, ww, hh = cv2.boundingRect(cnt)
@@ -273,13 +300,47 @@ class ColorBlobDetector(Node):
                 hyp = ObjectHypothesisWithPose()
                 # Jazzy: ObjectHypothesisWithPose 没有 id/score，要写进 hypothesis
                 hyp.hypothesis.class_id = f"blob:{color_name}"
-                hyp.hypothesis.score = float(area / total_pixels) if total_pixels > 0 else 0.0
+                hyp.hypothesis.score = score
 
                 det.results.append(hyp)
                 det_array.detections.append(det)
 
-        if det_array.detections:
-            self._pub.publish(det_array)
+        self._pub.publish(det_array)
+
+    # ------------------------------------------------------------------
+    def _roi_bounds(self, width: int, height: int) -> tuple[int, int, int, int]:
+        x0 = int(max(0.0, min(1.0, self._roi_x_min)) * width)
+        x1 = int(max(0.0, min(1.0, self._roi_x_max)) * width)
+        y0 = int(max(0.0, min(1.0, self._roi_y_min)) * height)
+        y1 = int(max(0.0, min(1.0, self._roi_y_max)) * height)
+
+        if x1 <= x0:
+            x0, x1 = 0, width
+        if y1 <= y0:
+            y0, y1 = 0, height
+
+        return x0, x1, y0, y1
+
+    # ------------------------------------------------------------------
+    def _apply_roi(
+        self,
+        mask: np.ndarray,
+        x_min: int,
+        x_max: int,
+        y_min: int,
+        y_max: int,
+    ) -> np.ndarray:
+        if (
+            x_min <= 0
+            and y_min <= 0
+            and x_max >= mask.shape[1]
+            and y_max >= mask.shape[0]
+        ):
+            return mask
+
+        roi_mask = np.zeros_like(mask)
+        roi_mask[y_min:y_max, x_min:x_max] = mask[y_min:y_max, x_min:x_max]
+        return roi_mask
 
 
 def main(args=None) -> None:
@@ -295,5 +356,3 @@ def main(args=None) -> None:
 
 if __name__ == "__main__":
     main()
-
-

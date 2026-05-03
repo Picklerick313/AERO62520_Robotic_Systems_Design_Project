@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 
-from vision_msgs.msg import Detection3DArray, Detection3D, ObjectHypothesisWithPose
+from vision_msgs.msg import Detection3DArray
 
 
 class ColorBlobSummary(Node):
@@ -70,23 +70,20 @@ class ColorBlobSummary(Node):
                 continue
 
             for hyp in det.results:
-                class_id = hyp.hypothesis.class_id  # 例如 "blob:red"
-                color = self._extract_color_from_id(class_id)
+                class_id = hyp.hypothesis.class_id
+                obj_type, color = self._split_class_id(class_id)
 
                 x = hyp.pose.pose.position.x
                 y = hyp.pose.pose.position.y
                 z = hyp.pose.pose.position.z
                 score = hyp.hypothesis.score
 
-                # 从四元数中提取 yaw（绕 Z 轴的旋转），单位：度
                 import math
-
                 qx = hyp.pose.pose.orientation.x
                 qy = hyp.pose.pose.orientation.y
                 qz = hyp.pose.pose.orientation.z
                 qw = hyp.pose.pose.orientation.w
 
-                # 标准 ZYX 欧拉角提取中的 yaw 分量
                 siny_cosp = 2.0 * (qw * qz + qx * qy)
                 cosy_cosp = 1.0 - 2.0 * (qy * qy + qz * qz)
                 yaw_rad = math.atan2(siny_cosp, cosy_cosp)
@@ -94,6 +91,8 @@ class ColorBlobSummary(Node):
 
                 summaries.append(
                     {
+                        "class_id": class_id,
+                        "type": obj_type,
                         "color": color,
                         "x": x,
                         "y": y,
@@ -105,28 +104,29 @@ class ColorBlobSummary(Node):
 
         # 打印汇总信息
         if summaries:
-            self.get_logger().info("=" * 60)
-            self.get_logger().info(f"Detected {len(summaries)} color blob(s):")
+            self.get_logger().info("=" * 80)
+            self.get_logger().info(f"Detected {len(summaries)} object(s):")
             for i, s in enumerate(summaries, 1):
                 self.get_logger().info(
-                    f"  [{i}] Color: {s['color']:8s} | "
-                    f"Position: ({s['x']:6.3f}, {s['y']:6.3f}, {s['z']:6.3f}) m | "
-                    f"yaw: {s['yaw_deg']:7.2f} deg | "
-                    f"Score: {s['score']:.4f}"
+                    f"[{i}] class={s['class_id']:12s} | "
+                    f"type={s['type']:5s} | color={s['color']:6s} | "
+                    f"pos=({s['x']:.3f}, {s['y']:.3f}, {s['z']:.3f}) m | "
+                    f"rz={s['yaw_deg']:.1f} deg | "
+                    f"score={s['score']:.4f}"
                 )
-            self.get_logger().info("=" * 60)
+            self.get_logger().info("=" * 80)
 
     # ------------------------------------------------------------------
-    def _extract_color_from_id(self, blob_id: str) -> str:
+    def _split_class_id(self, class_id: str):
         """
-        从 id 字符串中提取颜色名称。
-        例如: "blob:red" -> "red", "blob:blue" -> "blue"
+        "block:red" -> ("block", "red")
+        "bin:white" -> ("bin", "white")
+        "blob:red" -> ("blob", "red")
         """
-        if ":" in blob_id:
-            parts = blob_id.split(":", 1)
-            if len(parts) >= 2:
-                return parts[1]
-        return blob_id
+        if ":" in class_id:
+            obj_type, color = class_id.split(":", 1)
+            return obj_type, color
+        return "unknown", class_id
 
 
 def main(args=None) -> None:

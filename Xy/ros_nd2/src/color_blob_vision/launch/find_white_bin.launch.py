@@ -38,12 +38,26 @@ def generate_launch_description() -> LaunchDescription:
                 "depth_topic": "/camera/camera/aligned_depth_to_color/image_raw",
                 "blobs_2d_topic": "/color_blobs",
                 "output_topic": "/color_blobs_3d",
-                # 白 bin 用于导航，可以稍微看远一些（例如 1.0m 内）
-                "depth_min_m": 0.05,
-                "depth_max_m": 1.00,
-                "block_size_max_m": 0.10,
-                "bin_size_min_m": 0.15,
-                "bin_size_max_m": 0.35,
+
+                # 先收紧深度范围，减少远处白背景干扰
+                "depth_min_m": 0.10,
+                "depth_max_m": 0.80,
+
+                # 收紧尺寸区间
+                "block_size_max_m": 0.09,
+                "bin_size_min_m": 0.17,
+                "bin_size_max_m": 0.32,
+
+                # 深度 patch 稍微放大
+                "patch_radius": 5,
+
+                # bin 的时间确认和平滑
+                "bin_match_dist_m": 0.08,
+                "confirm_hits_bin": 4,
+                "max_misses_bin": 5,
+                "pos_alpha_bin": 0.15,
+                "yaw_alpha_bin": 0.10,
+                "score_alpha": 0.20,
             }
         ],
     )
@@ -56,5 +70,4 @@ def generate_launch_description() -> LaunchDescription:
             # 或者在这里一起起，只要订阅 /color_blobs_3d，筛选 bin:white 即可。
         ]
     )
-
 

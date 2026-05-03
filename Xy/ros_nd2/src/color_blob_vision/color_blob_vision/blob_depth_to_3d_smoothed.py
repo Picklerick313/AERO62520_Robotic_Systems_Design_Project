@@ -68,6 +68,11 @@ class BlobDepthTo3D(Node):
         self.declare_parameter("yaw_alpha_bin", 0.20)
         self.declare_parameter("score_alpha", 0.30)
 
+        self.declare_parameter("x_min_m", -10.0)
+        self.declare_parameter("x_max_m", 10.0)
+        self.declare_parameter("y_min_m", -10.0)
+        self.declare_parameter("y_max_m", 10.0)
+
         self._depth_topic = (
             self.get_parameter("depth_topic").get_parameter_value().string_value
         )
@@ -131,7 +136,18 @@ class BlobDepthTo3D(Node):
         self._score_alpha = (
             self.get_parameter("score_alpha").get_parameter_value().double_value
         )
-
+        self._x_min_m = (
+            self.get_parameter("x_min_m").get_parameter_value().double_value
+        )
+        self._x_max_m = (
+            self.get_parameter("x_max_m").get_parameter_value().double_value
+        )
+        self._y_min_m = (
+            self.get_parameter("y_min_m").get_parameter_value().double_value
+        )
+        self._y_max_m = (
+            self.get_parameter("y_max_m").get_parameter_value().double_value
+        )
         # 轻量级 track 管理：在 3D 输出前做时间确认 + 平滑
         self._tracks: dict[int, dict[str, Any]] = {}
         self._next_track_id = 1
@@ -290,7 +306,11 @@ class BlobDepthTo3D(Node):
             # ---------------- 深度范围过滤：仅保留 [depth_min_m, depth_max_m] 内的目标 ----------------
             if z3d < float(self._depth_min_m) or z3d > float(self._depth_max_m):
                 continue
+            if x3d < float(self._x_min_m) or x3d > float(self._x_max_m):
+                continue
 
+            if y3d < float(self._y_min_m) or y3d > float(self._y_max_m):
+                continue
             # ---------------- 基于 3D 尺度的 block/bin 分类 ----------------
             ww = float(det.bbox.size_x)
             hh = float(det.bbox.size_y)
@@ -339,15 +359,11 @@ class BlobDepthTo3D(Node):
         det3d_array = Detection3DArray()
         det3d_array.header = depth_msg.header
 
-        for track in self._tracks.values():
-            if not track["confirmed"]:
-                continue
-
+        for track in self._confirmed_tracks_to_publish():
             d3 = self._track_to_detection3d(track, depth_msg.header)
             det3d_array.detections.append(d3)
 
-        if det3d_array.detections:
-            self._pub.publish(det3d_array)
+        self._pub.publish(det3d_array)
 
     # ------------------------------------------------------------------
     def _update_tracks(self, raw_candidates: list[dict[str, Any]]) -> None:
@@ -356,7 +372,8 @@ class BlobDepthTo3D(Node):
         for cand in raw_candidates:
             track_id = self._find_best_track(cand, matched_track_ids)
             if track_id is None:
-                self._create_track(cand)
+                track_id = self._create_track(cand)
+                matched_track_ids.add(track_id)
                 continue
 
             matched_track_ids.add(track_id)
@@ -403,7 +420,7 @@ class BlobDepthTo3D(Node):
         return best_track_id
 
     # ------------------------------------------------------------------
-    def _create_track(self, cand: dict[str, Any]) -> None:
+    def _create_track(self, cand: dict[str, Any]) -> int:
         track_id = self._next_track_id
         self._next_track_id += 1
 
@@ -422,6 +439,44 @@ class BlobDepthTo3D(Node):
 
         if self._tracks[track_id]["hits"] >= self._confirm_hits_for_type(cand["obj_type"]):
             self._tracks[track_id]["confirmed"] = True
+
+        return track_id
+
+    # ------------------------------------------------------------------
+    def _confirmed_tracks_to_publish(self) -> list[dict[str, Any]]:
+        confirmed = [
+            track for track in self._tracks.values()
+            if track["confirmed"]
+        ]
+        confirmed.sort(
+            key=lambda track: (
+                -int(track["hits"]),
+                int(track["misses"]),
+                -float(track["score"]),
+            )
+        )
+
+        selected: list[dict[str, Any]] = []
+        for track in confirmed:
+            is_duplicate = False
+            for kept in selected:
+                if kept["class_id"] != track["class_id"]:
+                    continue
+
+                dist = math.sqrt(
+                    (track["x"] - kept["x"]) ** 2
+                    + (track["y"] - kept["y"]) ** 2
+                    + (track["z"] - kept["z"]) ** 2
+                )
+                if dist <= self._match_dist_for_type(track["obj_type"]):
+                    is_duplicate = True
+                    break
+
+            if not is_duplicate:
+                selected.append(track)
+
+        selected.sort(key=lambda track: (float(track["z"]), -float(track["score"])))
+        return selected
 
     # ------------------------------------------------------------------
     def _update_track(self, track: dict[str, Any], cand: dict[str, Any]) -> None:
@@ -578,4 +633,3 @@ def main(args=None) -> None:
 
 if __name__ == "__main__":
     main()
-

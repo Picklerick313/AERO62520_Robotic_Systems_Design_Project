@@ -305,8 +305,7 @@ class BlobDepthTo3D(Node):
 
             det3d_array.detections.append(d3)
 
-        if det3d_array.detections:
-            self._pub.publish(det3d_array)
+        self._pub.publish(det3d_array)
 
     # ------------------------------------------------------------------
     def _project_to_3d(
@@ -375,4 +374,3 @@ def main(args=None) -> None:
 
 if __name__ == "__main__":
     main()
-

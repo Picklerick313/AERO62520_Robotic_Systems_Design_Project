@@ -36,7 +36,9 @@ setup(
             'color_blob_summary = color_blob_vision.color_blob_summary:main',
             'color_blob_markers = color_blob_vision.color_blob_markers:main',
             'color_blob_debug_image = color_blob_vision.color_blob_debug_image:main',
-
+            'color_blob_run_recorder = color_blob_vision.color_blob_run_recorder:main',
+            'perception_manager = color_blob_vision.perception_manager:main',
+            'task_manager = color_blob_vision.task_manager:main',
         ],
     },
 )
