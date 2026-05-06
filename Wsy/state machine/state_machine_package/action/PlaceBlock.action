@@ -1,0 +1,6 @@
+int32 slot_index
+---
+bool success
+string message
+---
+float32 progress

@@ -1,0 +1,6 @@
+geometry_msgs/Point[] targets
+---
+bool success
+string message
+---
+float32 distance_remaining
